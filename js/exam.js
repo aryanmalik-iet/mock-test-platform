@@ -10,11 +10,45 @@ totalQuestionsElement.textContent = questions.length;
 document.getElementById("total-q").textContent = questions.length;
 document.getElementById("time-limit").textContent = timeLimit + " minutes";
 
+//question palatte
+
+function generatePalette(){
+
+const palette = document.getElementById("question-palette");
+palette.innerHTML = "";
+
+questions.forEach((q,index)=>{
+
+const btn = document.createElement("button");
+btn.textContent = index + 1;
+btn.className = "palette-btn";
+
+if(answers[index] !== undefined){
+btn.classList.add("answered");
+}
+
+if(index === currentQuestion){
+btn.classList.add("current");
+}
+
+btn.onclick = () => {
+currentQuestion = index;
+renderQuestion(questions[currentQuestion]);
+};
+
+palette.appendChild(btn);
+
+});
+
+}
+
+//start exam
 startBtn.onclick = () => {
 startScreen.classList.add("hidden");
 examScreen.classList.remove("hidden");
 
 renderQuestion(questions[currentQuestion]);
+generatePalette();
 };
 
 
@@ -31,6 +65,7 @@ document.getElementById("next-btn").onclick = ()=>{
 if(currentQuestion < questions.length - 1){
   currentQuestion++;
   renderQuestion(questions[currentQuestion]);
+  generatePalette();
 }
 }
 
@@ -38,6 +73,7 @@ document.getElementById("prev-btn").onclick = ()=>{
 if(currentQuestion > 0){
   currentQuestion--;
   renderQuestion(questions[currentQuestion]);
+  generatePalette();
 }
 };
 
@@ -51,6 +87,7 @@ if(answers[i] === q.answer){
 score++;
 }
 });
+
 
 //Restart button 
 restartBtn.onclick = () => {

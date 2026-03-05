@@ -102,6 +102,39 @@ button:hover{
 background:#357bd8;
 }
 
+/* ques palatte */
+
+#question-palette{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-top:20px;
+}
+
+.palette-btn{
+width:40px;
+height:40px;
+border-radius:5px;
+border:1px solid #ccc;
+background:#f5f5f5;
+cursor:pointer;
+color:rgb(0, 0, 0);
+text-align: center;
+}
+
+.palette-btn:hover{
+background:#357bd8;
+color:white;
+}
+
+.palette-btn.answered{
+background:#4a90e2;
+color:white;
+}
+
+.palette-btn.current{
+border:2px solid #333;
+}
 /* RESULT SCREEN */
 
 #score-display{
