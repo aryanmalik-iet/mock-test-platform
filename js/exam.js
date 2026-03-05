@@ -3,12 +3,13 @@ const startScreen = document.getElementById("start-screen");
 const examScreen = document.getElementById("exam-screen");
 const restartBtn = document.getElementById("restart-btn");
 const totalQuestionsElement = document.getElementById("total-questions");
-const timeLimit = 15; 
+const resultScreen = document.getElementById("result-screen");
+const timeLimit = 1 * 60; 
 
 //ques length and time
 totalQuestionsElement.textContent = questions.length;
 document.getElementById("total-q").textContent = questions.length;
-document.getElementById("time-limit").textContent = timeLimit + " minutes";
+document.getElementById("time-limit").textContent = (timeLimit/60) + " minutes";
 
 //question palatte
 
@@ -47,8 +48,11 @@ startBtn.onclick = () => {
 startScreen.classList.add("hidden");
 examScreen.classList.remove("hidden");
 
+totalTime = timeLimit;
+
 renderQuestion(questions[currentQuestion]);
 generatePalette();
+startTimer();
 };
 
 
@@ -77,9 +81,11 @@ if(currentQuestion > 0){
 }
 };
 
+//submit test function
+function submitTest(){
 
-//submit button
-document.getElementById("submit-btn").onclick = ()=>{
+clearInterval(timerInterval);
+
 let score = 0;
 
 questions.forEach((q,i)=>{
@@ -88,9 +94,22 @@ score++;
 }
 });
 
+const scoreDisplay = document.getElementById("score-display");
 
-//Restart button 
+examScreen.classList.add("hidden");
+resultScreen.classList.remove("hidden");
+
+scoreDisplay.textContent = score;
+
+}
+
+//submit button
+document.getElementById("submit-btn").onclick = submitTest;
+
+//restart handler
 restartBtn.onclick = () => {
+
+document.getElementById("time-remaining").textContent = "00:00";
 
 currentQuestion = 0;
 answers = [];
@@ -98,15 +117,4 @@ answers = [];
 resultScreen.classList.add("hidden");
 startScreen.classList.remove("hidden");
 
-};
-
-
-// result section
-const resultScreen = document.getElementById("result-screen");
-const scoreDisplay = document.getElementById("score-display");
-
-examScreen.classList.add("hidden");
-resultScreen.classList.remove("hidden");
-
-scoreDisplay.textContent = score;
-};
+}
