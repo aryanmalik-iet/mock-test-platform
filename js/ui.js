@@ -4,6 +4,8 @@ const questionContainer = document.getElementById("question-container");
 const optionsContainer = document.getElementById("options-container");
 const prevBtn = document.getElementById("prev-btn");
 const nextBtn = document.getElementById("next-btn");
+
+visited[currentQuestion] = true;
 document.getElementById("current-q").textContent = currentQuestion + 1;
 
 questionContainer.textContent = questionObj.question;

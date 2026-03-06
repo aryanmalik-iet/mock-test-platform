@@ -24,17 +24,31 @@ const btn = document.createElement("button");
 btn.textContent = index + 1;
 btn.className = "palette-btn";
 
-if(answers[index] !== undefined){
-btn.classList.add("answered");
+//quespllate state handeler 
+if(index === currentQuestion) {
+    btn.classList.add("current");
+    if(answers[index] !== null){
+        btn.classList.add("answered");
+    }
+    else if(review[index]){
+        btn.classList.add("review");
+    }
 }
-
-if(index === currentQuestion){
-btn.classList.add("current");
+else {
+    if (answers[index] !== null) {
+    btn.classList.add("answered");
+  }
+  else if (review[index]) {
+    btn.classList.add("review");
+  }
+  else if (visited[index]) {
+    btn.classList.add("visited");
+  }
 }
-
 btn.onclick = () => {
 currentQuestion = index;
 renderQuestion(questions[currentQuestion]);
+generatePalette();
 };
 
 palette.appendChild(btn);
@@ -42,6 +56,13 @@ palette.appendChild(btn);
 });
 
 }
+
+//review button 
+document.getElementById("review-btn").onclick = () => {
+review[currentQuestion] = !review[currentQuestion];
+generatePalette();
+
+};
 
 //start exam
 startBtn.onclick = () => {
@@ -52,12 +73,17 @@ totalTime = timeLimit;
 
 renderQuestion(questions[currentQuestion]);
 generatePalette();
+
+document.getElementById("time-remaining").textContent =
+String(timeLimit / 60).padStart(2,"0") + ":00";
 startTimer();
 };
 
 
 let currentQuestion = 0;
-let answers = [];
+let answers = new Array(questions.length).fill(null);
+let visited = new Array(questions.length).fill(false);
+let review = new Array(questions.length).fill(false);
 
 function selectAnswer(index){
 answers[currentQuestion] = index;
@@ -108,11 +134,14 @@ document.getElementById("submit-btn").onclick = submitTest;
 
 //restart handler
 restartBtn.onclick = () => {
+clearInterval(timerInterval);
 
 document.getElementById("time-remaining").textContent = "00:00";
 
 currentQuestion = 0;
-answers = [];
+answers = new Array(questions.length).fill(null);
+visited = new Array(questions.length).fill(false);
+review = new Array(questions.length).fill(false);
 
 resultScreen.classList.add("hidden");
 startScreen.classList.remove("hidden");

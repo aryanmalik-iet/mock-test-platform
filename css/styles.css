@@ -98,7 +98,7 @@ cursor:pointer;
 font-size:14px;
 }
 
-button:hover{
+.navigation button:hover{
 background:#357bd8;
 }
 
@@ -118,13 +118,20 @@ border-radius:5px;
 border:1px solid #ccc;
 background:#f5f5f5;
 cursor:pointer;
-color:rgb(0, 0, 0);
-text-align: center;
+color:black;
+
+display:flex;
+align-items:center;
+justify-content:center;
 }
 
 .palette-btn:hover{
-background:#357bd8;
-color:white;
+border-color:#999;
+}
+
+.palette-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .palette-btn.answered{
@@ -134,6 +141,16 @@ color:white;
 
 .palette-btn.current{
 border:2px solid #333;
+}
+
+.palette-btn.review{
+background:#b388ff;
+color:white;
+}
+
+.palette-btn.visited{
+background:#ffcc00;
+color:black;
 }
 /* RESULT SCREEN */
 
