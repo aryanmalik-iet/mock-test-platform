@@ -4,6 +4,7 @@ const questionContainer = document.getElementById("question-container");
 const optionsContainer = document.getElementById("options-container");
 const prevBtn = document.getElementById("prev-btn");
 const nextBtn = document.getElementById("next-btn");
+const revNextBtn = document.getElementById("review-next-btn");
 
 visited[currentQuestion] = true;
 document.getElementById("current-q").textContent = currentQuestion + 1;
@@ -28,4 +29,5 @@ optionsContainer.appendChild(btn);
 });
 prevBtn.disabled = currentQuestion === 0;
 nextBtn.disabled = currentQuestion === questions.length - 1;
+revNextBtn.disabled = currentQuestion === questions.length - 1;
 }

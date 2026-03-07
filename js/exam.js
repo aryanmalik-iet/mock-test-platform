@@ -1,5 +1,6 @@
 const startBtn = document.getElementById("start-btn");
 const startScreen = document.getElementById("start-screen");
+const header = document.getElementById("header");
 const examScreen = document.getElementById("exam-screen");
 const restartBtn = document.getElementById("restart-btn");
 const totalQuestionsElement = document.getElementById("total-questions");
@@ -11,6 +12,46 @@ totalQuestionsElement.textContent = questions.length;
 document.getElementById("total-q").textContent = questions.length;
 document.getElementById("time-limit").textContent = (timeLimit/60) + " minutes";
 
+//exam summry
+function updateStatusCounts(){
+
+let answered = 0;
+let reviewCount = 0;
+let answeredReview = 0;
+let unvisited = 0;
+let unanswered = 0;
+
+questions.forEach((q,i)=>{
+
+if(!visited[i]){
+unvisited++;
+}
+
+else if(answers[i] !== null && review[i]){
+answeredReview++;
+}
+
+else if(review[i]){
+reviewCount++;
+}
+
+else if(answers[i] !== null){
+answered++;
+}
+
+else {
+unanswered++;
+}
+
+});
+
+document.getElementById("count-answered").textContent = answered;
+document.getElementById("count-review").textContent = reviewCount;
+document.getElementById("count-unanswered").textContent = unanswered;
+document.getElementById("count-answered-review").textContent = answeredReview;
+document.getElementById("count-unvisited").textContent = unvisited;
+
+}
 //question palatte
 
 function generatePalette(){
@@ -27,7 +68,10 @@ btn.className = "palette-btn";
 //quespllate state handeler 
 if(index === currentQuestion) {
     btn.classList.add("current");
-    if(answers[index] !== null){
+    if(answers[index] !== null && review[index]){
+        btn.classList.add("answered-review");
+    }
+    else if(answers[index] !== null){
         btn.classList.add("answered");
     }
     else if(review[index]){
@@ -35,15 +79,18 @@ if(index === currentQuestion) {
     }
 }
 else {
-    if (answers[index] !== null) {
+    if(answers[index] !== null && review[index]){
+        btn.classList.add("answered-review");
+    }
+    else if (answers[index] !== null) {
     btn.classList.add("answered");
-  }
-  else if (review[index]) {
-    btn.classList.add("review");
-  }
-  else if (visited[index]) {
-    btn.classList.add("visited");
-  }
+    }
+    else if (review[index]) {
+      btn.classList.add("review");
+    }
+    else if (visited[index]) {
+      btn.classList.add("visited");
+    }
 }
 btn.onclick = () => {
 currentQuestion = index;
@@ -54,7 +101,17 @@ generatePalette();
 palette.appendChild(btn);
 
 });
+updateStatusCounts();
 
+const currentBtn = palette.querySelector(".palette-btn.current");
+
+if(currentBtn){
+currentBtn.scrollIntoView({
+block: "nearest",
+inline: "nearest",
+behavior: "smooth"
+});
+}
 }
 
 //review button 
@@ -67,6 +124,7 @@ generatePalette();
 //start exam
 startBtn.onclick = () => {
 startScreen.classList.add("hidden");
+header.classList.add("hidden");
 examScreen.classList.remove("hidden");
 
 totalTime = timeLimit;
@@ -106,6 +164,15 @@ if(currentQuestion > 0){
   generatePalette();
 }
 };
+document.getElementById("review-next-btn").onclick = () => {
+review[currentQuestion] = true;
+if(currentQuestion < questions.length - 1){
+currentQuestion++;
+}
+renderQuestion(questions[currentQuestion]);
+generatePalette();
+
+};
 
 //submit test function
 function submitTest(){
@@ -137,6 +204,7 @@ restartBtn.onclick = () => {
 clearInterval(timerInterval);
 
 document.getElementById("time-remaining").textContent = "00:00";
+document.getElementById("question-palette").scrollTop = 0;
 
 currentQuestion = 0;
 answers = new Array(questions.length).fill(null);
@@ -145,5 +213,6 @@ review = new Array(questions.length).fill(false);
 
 resultScreen.classList.add("hidden");
 startScreen.classList.remove("hidden");
+header.classList.remove("hidden");
 
 }
