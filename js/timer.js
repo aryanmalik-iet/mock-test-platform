@@ -1,24 +1,19 @@
-let totalTime; 
+let totalTime;
 let timerInterval;
 
-function startTimer(){
+function startTimer() {
+  timerInterval = setInterval(() => {
+    totalTime--;
 
-timerInterval = setInterval(() => {
+    const minutes = Math.floor(totalTime / 60);
+    const seconds = totalTime % 60;
 
-totalTime--;
+    document.getElementById("time-remaining").textContent =
+      String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
 
-const minutes = Math.floor(totalTime / 60);
-const seconds = totalTime % 60;
-
-document.getElementById("time-remaining").textContent =
-String(minutes).padStart(2,"0") + ":" +
-String(seconds).padStart(2,"0");
-
-if(totalTime <= 0){
-clearInterval(timerInterval);
-submitTest();
-}
-
-},1000);
-
+    if (totalTime <= 0) {
+      clearInterval(timerInterval);
+      submitTest();
+    }
+  }, 1000);
 }
