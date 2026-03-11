@@ -99,12 +99,11 @@ function generatePalette() {
   }
 }
 
-//review button
-document.getElementById("review-btn").onclick = () => {
-  review[currentQuestion] = !review[currentQuestion];
-  renderQuestion(questions[currentQuestion]);
+function updateExamUI(){
+  renderQuestion(Questions[currentQuestion]);
   generatePalette();
-};
+  saveExamState();
+}
 
 //start exam
 startBtn.onclick = () => {
@@ -176,21 +175,23 @@ function loadExamState() {
 }
 
 //Navigation button behivour
+
+document.getElementById("review-btn").onclick = () => {
+  review[currentQuestion] = !review[currentQuestion];
+  updateExamUI();
+};
+
 document.getElementById("next-btn").onclick = () => {
   if (currentQuestion < questions.length - 1) {
     currentQuestion++;
-    renderQuestion(questions[currentQuestion]);
-    generatePalette();
-    saveExamState();
+    updateExamUI();
   }
 };
 
 document.getElementById("prev-btn").onclick = () => {
   if (currentQuestion > 0) {
     currentQuestion--;
-    renderQuestion(questions[currentQuestion]);
-    generatePalette();
-    saveExamState();
+    updateExamUI();
   }
 };
 document.getElementById("review-next-btn").onclick = () => {
@@ -198,16 +199,12 @@ document.getElementById("review-next-btn").onclick = () => {
   if (currentQuestion < questions.length - 1) {
     currentQuestion++;
   }
-  renderQuestion(questions[currentQuestion]);
-  generatePalette();
-  saveExamState();
+  updateExamUI();
 };
 
 document.getElementById("clear-btn").onclick = () => {
   answers[currentQuestion] = null;
-  renderQuestion(questions[currentQuestion]);
-  generatePalette();
-  saveExamState();
+  updateExamUI();
 };
 
 //submit test function
@@ -238,8 +235,7 @@ document.getElementById("submit-btn").onclick = () => {
   document.getElementById("modal-answered").textContent = answered;
   document.getElementById("modal-review").textContent = reviewCount;
   document.getElementById("modal-answered-review").textContent = answeredReview;
-  document.getElementById("modal-unanswered").textContent =
-    unanswered + unvisited;
+  document.getElementById("modal-unanswered").textContent = unanswered + unvisited;
 
   document.getElementById("submit-modal").classList.remove("hidden");
 };
