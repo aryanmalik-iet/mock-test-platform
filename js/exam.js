@@ -80,8 +80,7 @@ function generatePalette() {
     }
     btn.onclick = () => {
       currentQuestion = index;
-      renderQuestion(questions[currentQuestion]);
-      generatePalette();
+      updateExamUI();
     };
 
     palette.appendChild(btn);
@@ -100,7 +99,7 @@ function generatePalette() {
 }
 
 function updateExamUI(){
-  renderQuestion(Questions[currentQuestion]);
+  renderQuestion(questions[currentQuestion]);
   generatePalette();
   saveExamState();
 }
