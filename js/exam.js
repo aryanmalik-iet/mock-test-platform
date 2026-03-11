@@ -5,20 +5,27 @@ const examScreen = document.getElementById("exam-screen");
 const restartBtn = document.getElementById("restart-btn");
 const totalQuestionsElement = document.getElementById("total-questions");
 const resultScreen = document.getElementById("result-screen");
-const timeLimit = 1 * 60;
+const timeLimit = 10 * 60;
 
 //ques length and time
 totalQuestionsElement.textContent = questions.length;
 document.getElementById("total-q").textContent = questions.length;
 document.getElementById("time-limit").textContent = timeLimit / 60 + " minutes";
 
-//exam summry
+//exam summary
+let answered = 0;
+let reviewCount = 0;
+let answeredReview = 0;
+let unvisited = 0;
+let unanswered = 0;
+
 function updateStatusCounts() {
-  let answered = 0;
-  let reviewCount = 0;
-  let answeredReview = 0;
-  let unvisited = 0;
-  let unanswered = 0;
+
+  answered = 0;
+  reviewCount = 0;
+  answeredReview = 0;
+  unvisited = 0;
+  unanswered = 0;
 
   questions.forEach((q, i) => {
     if (!visited[i]) {
@@ -96,6 +103,7 @@ function generatePalette() {
 //review button
 document.getElementById("review-btn").onclick = () => {
   review[currentQuestion] = !review[currentQuestion];
+  renderQuestion(questions[currentQuestion]);
   generatePalette();
 };
 
@@ -124,7 +132,7 @@ function selectAnswer(index) {
   answers[currentQuestion] = index;
 }
 
-//next and previous button behivour
+//Navigation button behivour
 document.getElementById("next-btn").onclick = () => {
   if (currentQuestion < questions.length - 1) {
     currentQuestion++;
@@ -145,6 +153,12 @@ document.getElementById("review-next-btn").onclick = () => {
   if (currentQuestion < questions.length - 1) {
     currentQuestion++;
   }
+  renderQuestion(questions[currentQuestion]);
+  generatePalette();
+};
+
+document.getElementById("clear-btn").onclick = () => {
+  answers[currentQuestion] = null;
   renderQuestion(questions[currentQuestion]);
   generatePalette();
 };
@@ -170,7 +184,26 @@ function submitTest() {
 }
 
 //submit button
-document.getElementById("submit-btn").onclick = submitTest;
+document.getElementById("submit-btn").onclick = () => {
+  updateStatusCounts();
+
+  document.getElementById("modal-answered").textContent = answered;
+  document.getElementById("modal-review").textContent = reviewCount;
+  document.getElementById("modal-answered-review").textContent = answeredReview;
+  document.getElementById("modal-unanswered").textContent = unanswered + unvisited;
+
+  document.getElementById("submit-modal").classList.remove("hidden");
+};
+
+//submit modal buttons
+document.getElementById("confirm-submit").onclick = () => {
+  document.getElementById("submit-modal").classList.add("hidden");
+  submitTest();
+};
+
+document.getElementById("cancel-submit").onclick = () => {
+  document.getElementById("submit-modal").classList.add("hidden");
+};
 
 //restart handler
 restartBtn.onclick = () => {

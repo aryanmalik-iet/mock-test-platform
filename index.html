@@ -44,8 +44,10 @@
                 <div id="question-container"></div>
                 <div id="options-container"></div>
               </div>
+              <!-- Navigation buttons -->
               <div class="navigation">
                 <button id="prev-btn">Previous</button>
+                <button id="clear-btn">Clear Response</button>
                 <button id="review-btn">Mark for Review</button>
                 <button id="review-next-btn">Review & Next</button>
                 <button id="next-btn">Next</button>
@@ -53,13 +55,26 @@
             </div>
             <div class="exam-sidebar">
               <div id="status-summary">
-                <div>Answered: <span id="count-answered">0</span></div>
-                <div>Review: <span id="count-review">0</span></div>
-                <div>
+                <div class="status-item">
+                  <span class="status-box answered"></span>
+                  Answered: <span id="count-answered">0</span>
+                </div>
+                <div class="status-item">
+                  <span class="status-box review"></span>
+                  Review: <span id="count-review">0</span>
+                </div>
+                <div class="status-item">
+                  <span class="status-box answered-review"></span>
                   Answered & Review: <span id="count-answered-review">0</span>
                 </div>
-                <div>Not Answered: <span id="count-unanswered">0</span></div>
-                <div>Not Visited: <span id="count-unvisited">0</span></div>
+                <div class="status-item">
+                  <span class="status-box unanswered"></span>
+                  Not Answered: <span id="count-unanswered">0</span>
+                </div>
+                <div class="status-item">
+                  <span class="status-box not-visited"></span>
+                  Not Visited: <span id="count-unvisited">0</span>
+                </div>
               </div>
               <div id="question-palette"></div>
               <button id="submit-btn">Submit</button>
@@ -78,6 +93,24 @@
         <button id="restart-btn">Take Another Test</button>
       </section>
     </main>
+    <!-- Submit modal-->
+    <div id="submit-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>Submit Test?</h3>
+
+        <p>
+          Answered: <span id="modal-answered"></span><br/>
+          Answered & Marked for review <span id="modal-answered-review"></span><br/>
+          Marked for Review: <span id="modal-review"></span><br/>
+          Unanswered: <span id="modal-unanswered"></span>
+        </p>
+
+        <div class="modal-actions">
+          <button id="confirm-submit">Submit</button>
+          <button id="cancel-submit">Cancel</button>
+        </div>
+      </div>
+    </div>
 
     <script src="js/questions.js"></script>
     <script src="js/ui.js"></script>

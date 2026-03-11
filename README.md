@@ -31,7 +31,7 @@ This project started as a single HTML file and I gradually rebuilt it step by st
 mock-test-platform
 │
 ├── css
-│   └── style.css
+│   └── styles.css
 ├── js
 │   ├── exam.js
 │   ├── questions.js

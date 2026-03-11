@@ -100,8 +100,6 @@ section {
 .question-box {
   overflow-y: auto;
   flex: 1;
-  overflow-y: auto;
-
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -215,8 +213,41 @@ button:disabled:hover {
 #status-summary {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 14px;
+  gap: 6px;
+  font-size: 16px;
+}
+
+.status-item{
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.status-box{
+width:12px;
+height:12px;
+border-radius:2px;
+display:inline-block;
+}
+
+.status-box.answered{
+background:#4a90e2;
+}
+
+.status-box.review{
+background:#b388ff;
+}
+
+.status-box.answered-review{
+background:#ff8c42;
+}
+
+.status-box.unanswered{
+background:#ffcc00;
+}
+.status-box.not-visited{
+background:#e0e0e0;
+border:1px solid #bbb;
 }
 /* ques palatte */
 
@@ -284,6 +315,36 @@ button:disabled:hover {
 .palette-btn.answered-review {
   background: #ff8c42;
   color: white;
+}
+
+/* Submit model*/
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0, 0, 0, 0.4);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 /* RESULT SCREEN */
 
