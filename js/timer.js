@@ -4,6 +4,7 @@ let timerInterval;
 function startTimer() {
   timerInterval = setInterval(() => {
     totalTime--;
+    saveExamState();
 
     const minutes = Math.floor(totalTime / 60);
     const seconds = totalTime % 60;

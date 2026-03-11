@@ -20,7 +20,6 @@ let unvisited = 0;
 let unanswered = 0;
 
 function updateStatusCounts() {
-
   answered = 0;
   reviewCount = 0;
   answeredReview = 0;
@@ -128,8 +127,52 @@ let answers = new Array(questions.length).fill(null);
 let visited = new Array(questions.length).fill(false);
 let review = new Array(questions.length).fill(false);
 
+//answer selector
 function selectAnswer(index) {
   answers[currentQuestion] = index;
+  saveExamState();
+}
+//exam state saver to local storage
+function saveExamState() {
+  const state = {
+    answers,
+    visited,
+    review,
+    currentQuestion,
+    totalTime,
+  };
+
+  localStorage.setItem("examState", JSON.stringify(state));
+}
+
+//localstorage state recovery
+function loadExamState() {
+  const savedState = localStorage.getItem("examState");
+
+  if (!savedState) return;
+
+  const state = JSON.parse(savedState);
+
+  answers = state.answers;
+  visited = state.visited;
+  review = state.review;
+  currentQuestion = state.currentQuestion;
+  totalTime = state.totalTime;
+
+  startScreen.classList.add("hidden");
+  header.classList.add("hidden");
+  examScreen.classList.remove("hidden");
+
+  renderQuestion(questions[currentQuestion]);
+  generatePalette();
+
+  const minutes = Math.floor(totalTime / 60);
+  const seconds = totalTime % 60;
+
+  document.getElementById("time-remaining").textContent =
+    String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
+
+  startTimer();
 }
 
 //Navigation button behivour
@@ -138,6 +181,7 @@ document.getElementById("next-btn").onclick = () => {
     currentQuestion++;
     renderQuestion(questions[currentQuestion]);
     generatePalette();
+    saveExamState();
   }
 };
 
@@ -146,6 +190,7 @@ document.getElementById("prev-btn").onclick = () => {
     currentQuestion--;
     renderQuestion(questions[currentQuestion]);
     generatePalette();
+    saveExamState();
   }
 };
 document.getElementById("review-next-btn").onclick = () => {
@@ -155,17 +200,20 @@ document.getElementById("review-next-btn").onclick = () => {
   }
   renderQuestion(questions[currentQuestion]);
   generatePalette();
+  saveExamState();
 };
 
 document.getElementById("clear-btn").onclick = () => {
   answers[currentQuestion] = null;
   renderQuestion(questions[currentQuestion]);
   generatePalette();
+  saveExamState();
 };
 
 //submit test function
 function submitTest() {
   clearInterval(timerInterval);
+  localStorage.removeItem("examState");
 
   let score = 0;
 
@@ -190,7 +238,8 @@ document.getElementById("submit-btn").onclick = () => {
   document.getElementById("modal-answered").textContent = answered;
   document.getElementById("modal-review").textContent = reviewCount;
   document.getElementById("modal-answered-review").textContent = answeredReview;
-  document.getElementById("modal-unanswered").textContent = unanswered + unvisited;
+  document.getElementById("modal-unanswered").textContent =
+    unanswered + unvisited;
 
   document.getElementById("submit-modal").classList.remove("hidden");
 };
@@ -208,6 +257,7 @@ document.getElementById("cancel-submit").onclick = () => {
 //restart handler
 restartBtn.onclick = () => {
   clearInterval(timerInterval);
+  localStorage.removeItem("examState");
 
   document.getElementById("time-remaining").textContent = "00:00";
   document.getElementById("question-palette").scrollTop = 0;
@@ -221,3 +271,5 @@ restartBtn.onclick = () => {
   startScreen.classList.remove("hidden");
   header.classList.remove("hidden");
 };
+
+loadExamState();
