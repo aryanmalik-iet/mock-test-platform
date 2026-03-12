@@ -131,6 +131,11 @@ startBtn.onclick = () => {
 
   questionOrder = [...Array(questions.length).keys()];
   shuffleArray(questionOrder);
+  optionOrder = questions.map((q) => {
+    const order = [...Array(q.options.length).keys()];
+    shuffleArray(order);
+    return order;
+  });
 
   updateExamUI();
 
@@ -145,6 +150,7 @@ let answers = new Array(questions.length).fill(null);
 let visited = new Array(questions.length).fill(false);
 let review = new Array(questions.length).fill(false);
 let questionOrder = [];
+let optionOrder = [];
 
 //answer selector
 function selectAnswer(index) {
@@ -158,7 +164,8 @@ function saveExamState() {
     review,
     currentQuestion,
     totalTime,
-    questionOrder
+    questionOrder,
+    optionOrder,
   };
 
   localStorage.setItem("examState", JSON.stringify(state));
@@ -178,6 +185,7 @@ function loadExamState() {
   currentQuestion = state.currentQuestion;
   totalTime = state.totalTime;
   questionOrder = state.questionOrder;
+  optionOrder = state.optionOrder;
 
   startScreen.classList.add("hidden");
   header.classList.add("hidden");
@@ -235,7 +243,11 @@ function submitTest() {
   let score = 0;
 
   questions.forEach((q, i) => {
-    if (answers[i] === q.answer) {
+    const qIndex = questionOrder[i];
+    const correctOriginalIndex = questions[qIndex].correct;
+    const shuffledIndex = optionOrder[qIndex].indexOf(correctOriginalIndex);
+
+    if (answers[i] === shuffledIndex) {
       score++;
     }
   });
@@ -283,6 +295,8 @@ restartBtn.onclick = () => {
   answers = new Array(questions.length).fill(null);
   visited = new Array(questions.length).fill(false);
   review = new Array(questions.length).fill(false);
+  questionOrder = [];
+  optionOrder = [];
 
   resultScreen.classList.add("hidden");
   startScreen.classList.remove("hidden");

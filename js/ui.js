@@ -14,17 +14,24 @@ function renderQuestion(questionObj) {
 
   optionsContainer.innerHTML = "";
 
-  questionObj.options.forEach((opt, index) => {
+  const qIndex = questionOrder[currentQuestion];
+  const order = optionOrder[qIndex];
+
+  order.forEach((optIndex, displayIndex) => {
     const btn = document.createElement("button");
-    btn.textContent = opt;
+
+    btn.textContent = questionObj.options[optIndex];
     btn.className = "option";
-    if (answers[currentQuestion] === index) {
+
+    if (answers[currentQuestion] === displayIndex) {
       btn.classList.add("selected");
     }
+
     btn.onclick = () => {
-      selectAnswer(index);
-      updateExamUI()
+      selectAnswer(displayIndex);
+      updateExamUI();
     };
+
     optionsContainer.appendChild(btn);
   });
 
