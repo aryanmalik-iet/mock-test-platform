@@ -23,8 +23,7 @@ function renderQuestion(questionObj) {
     }
     btn.onclick = () => {
       selectAnswer(index);
-      renderQuestion(questions[currentQuestion]);
-      generatePalette();
+      updateExamUI()
     };
     optionsContainer.appendChild(btn);
   });

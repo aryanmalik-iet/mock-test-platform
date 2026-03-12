@@ -1,3 +1,4 @@
+// DOM Refrences 
 const startBtn = document.getElementById("start-btn");
 const startScreen = document.getElementById("start-screen");
 const header = document.getElementById("header");
@@ -5,20 +6,23 @@ const examScreen = document.getElementById("exam-screen");
 const restartBtn = document.getElementById("restart-btn");
 const totalQuestionsElement = document.getElementById("total-questions");
 const resultScreen = document.getElementById("result-screen");
+
+// exam configuration
 const timeLimit = 10 * 60;
 
-//ques length and time
+//Initial UI Setup
 totalQuestionsElement.textContent = questions.length;
 document.getElementById("total-q").textContent = questions.length;
 document.getElementById("time-limit").textContent = timeLimit / 60 + " minutes";
 
-//exam summary
+//exam status counter
 let answered = 0;
 let reviewCount = 0;
 let answeredReview = 0;
 let unvisited = 0;
 let unanswered = 0;
 
+//Status Calculation
 function updateStatusCounts() {
   answered = 0;
   reviewCount = 0;
@@ -46,8 +50,18 @@ function updateStatusCounts() {
   document.getElementById("count-answered-review").textContent = answeredReview;
   document.getElementById("count-unvisited").textContent = unvisited;
 }
-//question palatte
 
+// Uitility fuinctions
+//questions suffling 
+// function shuffleArray(array) {
+//   for (let i = array.length - 1; i > 0; i--) {
+//     const j = Math.floor(Math.random() * (i + 1));
+//     [array[i], array[j]] = [array[j], array[i]];
+//   }
+// }
+
+//UI Rendering Helpers
+//question palatte
 function generatePalette() {
   const palette = document.getElementById("question-palette");
   palette.innerHTML = "";
@@ -98,7 +112,8 @@ function generatePalette() {
   }
 }
 
-function updateExamUI(){
+// UI UPDATE PIPELINE
+function updateExamUI() {
   renderQuestion(questions[currentQuestion]);
   generatePalette();
   saveExamState();
@@ -112,14 +127,16 @@ startBtn.onclick = () => {
 
   totalTime = timeLimit;
 
-  renderQuestion(questions[currentQuestion]);
-  generatePalette();
+  shuffleArray(questions);
+
+  updateExamUI();
 
   document.getElementById("time-remaining").textContent =
     String(timeLimit / 60).padStart(2, "0") + ":00";
   startTimer();
 };
 
+//Exam State
 let currentQuestion = 0;
 let answers = new Array(questions.length).fill(null);
 let visited = new Array(questions.length).fill(false);
@@ -128,7 +145,6 @@ let review = new Array(questions.length).fill(false);
 //answer selector
 function selectAnswer(index) {
   answers[currentQuestion] = index;
-  saveExamState();
 }
 //exam state saver to local storage
 function saveExamState() {
@@ -174,7 +190,6 @@ function loadExamState() {
 }
 
 //Navigation button behivour
-
 document.getElementById("review-btn").onclick = () => {
   review[currentQuestion] = !review[currentQuestion];
   updateExamUI();
@@ -266,5 +281,6 @@ restartBtn.onclick = () => {
   startScreen.classList.remove("hidden");
   header.classList.remove("hidden");
 };
+
 
 loadExamState();
