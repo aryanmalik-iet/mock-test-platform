@@ -1,4 +1,4 @@
-// DOM Refrences 
+// DOM Refrences
 const startBtn = document.getElementById("start-btn");
 const startScreen = document.getElementById("start-screen");
 const header = document.getElementById("header");
@@ -52,15 +52,17 @@ function updateStatusCounts() {
 }
 
 // Uitility fuinctions
-//questions suffling 
-// function shuffleArray(array) {
-//   for (let i = array.length - 1; i > 0; i--) {
-//     const j = Math.floor(Math.random() * (i + 1));
-//     [array[i], array[j]] = [array[j], array[i]];
-//   }
-// }
+
+//questions suffling
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
 
 //UI Rendering Helpers
+
 //question palatte
 function generatePalette() {
   const palette = document.getElementById("question-palette");
@@ -114,7 +116,7 @@ function generatePalette() {
 
 // UI UPDATE PIPELINE
 function updateExamUI() {
-  renderQuestion(questions[currentQuestion]);
+  renderQuestion(questions[questionOrder[currentQuestion]]);
   generatePalette();
   saveExamState();
 }
@@ -127,7 +129,8 @@ startBtn.onclick = () => {
 
   totalTime = timeLimit;
 
-  shuffleArray(questions);
+  questionOrder = [...Array(questions.length).keys()];
+  shuffleArray(questionOrder);
 
   updateExamUI();
 
@@ -141,6 +144,7 @@ let currentQuestion = 0;
 let answers = new Array(questions.length).fill(null);
 let visited = new Array(questions.length).fill(false);
 let review = new Array(questions.length).fill(false);
+let questionOrder = [];
 
 //answer selector
 function selectAnswer(index) {
@@ -154,6 +158,7 @@ function saveExamState() {
     review,
     currentQuestion,
     totalTime,
+    questionOrder
   };
 
   localStorage.setItem("examState", JSON.stringify(state));
@@ -172,12 +177,13 @@ function loadExamState() {
   review = state.review;
   currentQuestion = state.currentQuestion;
   totalTime = state.totalTime;
+  questionOrder = state.questionOrder;
 
   startScreen.classList.add("hidden");
   header.classList.add("hidden");
   examScreen.classList.remove("hidden");
 
-  renderQuestion(questions[currentQuestion]);
+  renderQuestion(questions[questionOrder[currentQuestion]]);
   generatePalette();
 
   const minutes = Math.floor(totalTime / 60);
@@ -249,7 +255,8 @@ document.getElementById("submit-btn").onclick = () => {
   document.getElementById("modal-answered").textContent = answered;
   document.getElementById("modal-review").textContent = reviewCount;
   document.getElementById("modal-answered-review").textContent = answeredReview;
-  document.getElementById("modal-unanswered").textContent = unanswered + unvisited;
+  document.getElementById("modal-unanswered").textContent =
+    unanswered + unvisited;
 
   document.getElementById("submit-modal").classList.remove("hidden");
 };
@@ -281,6 +288,5 @@ restartBtn.onclick = () => {
   startScreen.classList.remove("hidden");
   header.classList.remove("hidden");
 };
-
 
 loadExamState();
