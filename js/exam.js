@@ -31,13 +31,13 @@ function updateStatusCounts() {
   unanswered = 0;
 
   questions.forEach((q, i) => {
-    if (!visited[i]) {
+    if (!examState.visited[i]) {
       unvisited++;
-    } else if (answers[i] !== null && review[i]) {
+    } else if (examState.answers[i] !== null && examState.review[i]) {
       answeredReview++;
-    } else if (review[i]) {
+    } else if (examState.review[i]) {
       reviewCount++;
-    } else if (answers[i] !== null) {
+    } else if (examState.answers[i] !== null) {
       answered++;
     } else {
       unanswered++;
@@ -74,28 +74,28 @@ function generatePalette() {
     btn.className = "palette-btn";
 
     //quespllate state handeler
-    if (index === currentQuestion) {
+    if (index === examState.currentQuestion) {
       btn.classList.add("current");
-      if (answers[index] !== null && review[index]) {
+      if (examState.answers[index] !== null && examState.review[index]) {
         btn.classList.add("answered-review");
-      } else if (answers[index] !== null) {
+      } else if (examState.answers[index] !== null) {
         btn.classList.add("answered");
-      } else if (review[index]) {
+      } else if (examState.review[index]) {
         btn.classList.add("review");
       }
     } else {
-      if (answers[index] !== null && review[index]) {
+      if (examState.answers[index] !== null && examState.review[index]) {
         btn.classList.add("answered-review");
-      } else if (answers[index] !== null) {
+      } else if (examState.answers[index] !== null) {
         btn.classList.add("answered");
-      } else if (review[index]) {
+      } else if (examState.review[index]) {
         btn.classList.add("review");
-      } else if (visited[index]) {
+      } else if (examState.visited[index]) {
         btn.classList.add("visited");
       }
     }
     btn.onclick = () => {
-      currentQuestion = index;
+      examState.currentQuestion = index;
       updateExamUI();
     };
 
@@ -116,7 +116,7 @@ function generatePalette() {
 
 // UI UPDATE PIPELINE
 function updateExamUI() {
-  renderQuestion(questions[questionOrder[currentQuestion]]);
+  renderQuestion(questions[examState.questionOrder[examState.currentQuestion]]);
   generatePalette();
   saveExamState();
 }
@@ -127,11 +127,11 @@ startBtn.onclick = () => {
   header.classList.add("hidden");
   examScreen.classList.remove("hidden");
 
-  totalTime = timeLimit;
+  examState.totalTime = timeLimit;
 
-  questionOrder = [...Array(questions.length).keys()];
-  shuffleArray(questionOrder);
-  optionOrder = questions.map((q) => {
+  examState.questionOrder = [...Array(questions.length).keys()];
+  shuffleArray(examState.questionOrder);
+  examState.optionOrder = questions.map((q) => {
     const order = [...Array(q.options.length).keys()];
     shuffleArray(order);
     return order;
@@ -145,30 +145,22 @@ startBtn.onclick = () => {
 };
 
 //Exam State
-let currentQuestion = 0;
-let answers = new Array(questions.length).fill(null);
-let visited = new Array(questions.length).fill(false);
-let review = new Array(questions.length).fill(false);
-let questionOrder = [];
-let optionOrder = [];
-
+let examState = {
+  currentQuestion: 0,
+  answers: new Array(questions.length).fill(null),
+  visited: new Array(questions.length).fill(false),
+  review: new Array(questions.length).fill(false),
+  questionOrder: [],
+  optionOrder: [],
+  totalTime: 0
+};
 //answer selector
 function selectAnswer(index) {
-  answers[currentQuestion] = index;
+  examState.answers[examState.currentQuestion] = index;
 }
 //exam state saver to local storage
 function saveExamState() {
-  const state = {
-    answers,
-    visited,
-    review,
-    currentQuestion,
-    totalTime,
-    questionOrder,
-    optionOrder,
-  };
-
-  localStorage.setItem("examState", JSON.stringify(state));
+  localStorage.setItem("examState", JSON.stringify(examState));
 }
 
 //localstorage state recovery
@@ -177,25 +169,17 @@ function loadExamState() {
 
   if (!savedState) return;
 
-  const state = JSON.parse(savedState);
-
-  answers = state.answers;
-  visited = state.visited;
-  review = state.review;
-  currentQuestion = state.currentQuestion;
-  totalTime = state.totalTime;
-  questionOrder = state.questionOrder;
-  optionOrder = state.optionOrder;
+  examState = JSON.parse(savedState);
 
   startScreen.classList.add("hidden");
   header.classList.add("hidden");
   examScreen.classList.remove("hidden");
 
-  renderQuestion(questions[questionOrder[currentQuestion]]);
+  renderQuestion(questions[examState.questionOrder[examState.currentQuestion]]);
   generatePalette();
 
-  const minutes = Math.floor(totalTime / 60);
-  const seconds = totalTime % 60;
+  const minutes = Math.floor(examState.totalTime / 60);
+  const seconds = examState.totalTime % 60;
 
   document.getElementById("time-remaining").textContent =
     String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
@@ -205,33 +189,33 @@ function loadExamState() {
 
 //Navigation button behivour
 document.getElementById("review-btn").onclick = () => {
-  review[currentQuestion] = !review[currentQuestion];
+  examState.review[examState.currentQuestion] = !examState.review[examState.currentQuestion];
   updateExamUI();
 };
 
 document.getElementById("next-btn").onclick = () => {
-  if (currentQuestion < questions.length - 1) {
-    currentQuestion++;
+  if (examState.currentQuestion < questions.length - 1) {
+    examState.currentQuestion++;
     updateExamUI();
   }
 };
 
 document.getElementById("prev-btn").onclick = () => {
-  if (currentQuestion > 0) {
-    currentQuestion--;
+  if (examState.currentQuestion > 0) {
+    examState.currentQuestion--;
     updateExamUI();
   }
 };
 document.getElementById("review-next-btn").onclick = () => {
-  review[currentQuestion] = true;
-  if (currentQuestion < questions.length - 1) {
-    currentQuestion++;
+  examState.review[examState.currentQuestion] = true;
+  if (examState.currentQuestion < questions.length - 1) {
+    examState.currentQuestion++;
   }
   updateExamUI();
 };
 
 document.getElementById("clear-btn").onclick = () => {
-  answers[currentQuestion] = null;
+  examState.answers[examState.currentQuestion] = null;
   updateExamUI();
 };
 
@@ -243,11 +227,11 @@ function submitTest() {
   let score = 0;
 
   questions.forEach((q, i) => {
-    const qIndex = questionOrder[i];
+    const qIndex = examState.questionOrder[i];
     const correctOriginalIndex = questions[qIndex].correct;
-    const shuffledIndex = optionOrder[qIndex].indexOf(correctOriginalIndex);
+    const shuffledIndex = examState.optionOrder[qIndex].indexOf(correctOriginalIndex);
 
-    if (answers[i] === shuffledIndex) {
+    if (examState.answers[i] === shuffledIndex) {
       score++;
     }
   });
@@ -291,12 +275,12 @@ restartBtn.onclick = () => {
   document.getElementById("time-remaining").textContent = "00:00";
   document.getElementById("question-palette").scrollTop = 0;
 
-  currentQuestion = 0;
-  answers = new Array(questions.length).fill(null);
-  visited = new Array(questions.length).fill(false);
-  review = new Array(questions.length).fill(false);
-  questionOrder = [];
-  optionOrder = [];
+  examState.currentQuestion = 0;
+  examState.answers = new Array(questions.length).fill(null);
+  examState.visited = new Array(questions.length).fill(false);
+  examState.review = new Array(questions.length).fill(false);
+  examState.questionOrder = [];
+  examState.optionOrder = [];
 
   resultScreen.classList.add("hidden");
   startScreen.classList.remove("hidden");

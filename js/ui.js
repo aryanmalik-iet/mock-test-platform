@@ -7,15 +7,15 @@ function renderQuestion(questionObj) {
   const revNextBtn = document.getElementById("review-next-btn");
   const clearBtn = document.getElementById("clear-btn");
 
-  visited[currentQuestion] = true;
-  document.getElementById("current-q").textContent = currentQuestion + 1;
+  examState.visited[examState.currentQuestion] = true;
+  document.getElementById("current-q").textContent = examState.currentQuestion + 1;
 
   questionContainer.textContent = questionObj.question;
 
   optionsContainer.innerHTML = "";
 
-  const qIndex = questionOrder[currentQuestion];
-  const order = optionOrder[qIndex];
+  const qIndex = examState.questionOrder[examState.currentQuestion];
+  const order = examState.optionOrder[qIndex];
 
   order.forEach((optIndex, displayIndex) => {
     const btn = document.createElement("button");
@@ -23,7 +23,7 @@ function renderQuestion(questionObj) {
     btn.textContent = questionObj.options[optIndex];
     btn.className = "option";
 
-    if (answers[currentQuestion] === displayIndex) {
+    if (examState.answers[examState.currentQuestion] === displayIndex) {
       btn.classList.add("selected");
     }
 
@@ -36,15 +36,15 @@ function renderQuestion(questionObj) {
   });
 
   //review button text handler
-  if (review[currentQuestion]) {
+  if (examState.review[examState.currentQuestion]) {
     reviewBtn.textContent = "Unmark Review";
   } else {
     reviewBtn.textContent = "Mark for Review";
   }
 
   //buttons dissabeling
-  prevBtn.disabled = currentQuestion === 0;
-  nextBtn.disabled = currentQuestion === questions.length - 1;
-  revNextBtn.disabled = currentQuestion === questions.length - 1;
-  clearBtn.disabled = answers[currentQuestion] === null;
+  prevBtn.disabled = examState.currentQuestion === 0;
+  nextBtn.disabled = examState.currentQuestion === questions.length - 1;
+  revNextBtn.disabled = examState.currentQuestion === questions.length - 1;
+  clearBtn.disabled = examState.answers[examState.currentQuestion] === null;
 }
