@@ -29,7 +29,7 @@ function renderQuestion(questionObj) {
 
     btn.onclick = () => {
       selectAnswer(displayIndex);
-      updateExamUI();
+      syncExamUI();
     };
 
     optionsContainer.appendChild(btn);
