@@ -1,20 +1,36 @@
 // DOM Refrences
 const startBtn = document.getElementById("start-btn");
-const startScreen = document.getElementById("start-screen");
+const instructionScreen = document.getElementById("instruction-screen");
+const homeScreen = document.getElementById("home-screen");
 const header = document.getElementById("header");
 const examScreen = document.getElementById("exam-screen");
 const restartBtn = document.getElementById("restart-btn");
 const totalQuestionsElement = document.getElementById("total-questions");
 const resultScreen = document.getElementById("result-screen");
 
+let selectedTest = null;
+
+// select test button
+document.querySelectorAll(".start-test-btn").forEach((btn) => {
+  btn.onclick = () => {
+    selectedTest = btn.dataset.test;
+
+    console.log("Selected Test:", selectedTest);
+
+    homeScreen.classList.add("hidden");
+    instructionScreen.classList.remove("hidden");
+  };
+});
+
 // exam configuration
 const examConfig = {
-  timeLimit: 10 * 60
-}
+  timeLimit: 10 * 60,
+};
 //Initial UI Setup
 totalQuestionsElement.textContent = questions.length;
 document.getElementById("total-q").textContent = questions.length;
-document.getElementById("time-limit").textContent = examConfig.timeLimit / 60 + " minutes";
+document.getElementById("time-limit").textContent =
+  examConfig.timeLimit / 60 + " minutes";
 
 //exam status counter
 let answered = 0;
@@ -125,24 +141,25 @@ function syncExamUI() {
 //Exam Start Function
 
 function startExam() {
-  startScreen.classList.add("hidden");
+  instructionScreen.classList.add("hidden");
   header.classList.add("hidden");
   examScreen.classList.remove("hidden");
-  
+
   examState.totalTime = examConfig.timeLimit;
   document.getElementById("time-remaining").textContent =
     String(examConfig.timeLimit / 60).padStart(2, "0") + ":00";
-  
+
   examState.questionOrder = [...Array(questions.length).keys()];
   shuffleArray(examState.questionOrder);
-  
+
   examState.optionOrder = questions.map((q) => {
     const order = [...Array(q.options.length).keys()];
     shuffleArray(order);
     return order;
   });
-
 }
+
+
 
 //start button
 startBtn.onclick = () => {
@@ -159,7 +176,7 @@ let examState = {
   review: new Array(questions.length).fill(false),
   questionOrder: [],
   optionOrder: [],
-  totalTime: 0
+  totalTime: 0,
 };
 //answer selector
 function selectAnswer(index) {
@@ -178,7 +195,7 @@ function loadExamState() {
 
   examState = JSON.parse(savedState);
 
-  startScreen.classList.add("hidden");
+  homeScreen.classList.add("hidden");
   header.classList.add("hidden");
   examScreen.classList.remove("hidden");
 
@@ -196,7 +213,8 @@ function loadExamState() {
 
 //Navigation button behivour
 document.getElementById("review-btn").onclick = () => {
-  examState.review[examState.currentQuestion] = !examState.review[examState.currentQuestion];
+  examState.review[examState.currentQuestion] =
+    !examState.review[examState.currentQuestion];
   syncExamUI();
 };
 
@@ -234,7 +252,8 @@ function calculateScore() {
   questions.forEach((q, i) => {
     const qIndex = examState.questionOrder[i];
     const correctOriginalIndex = questions[qIndex].correct;
-    const shuffledIndex = examState.optionOrder[qIndex].indexOf(correctOriginalIndex);
+    const shuffledIndex =
+      examState.optionOrder[qIndex].indexOf(correctOriginalIndex);
 
     if (examState.answers[i] === shuffledIndex) {
       score++;
@@ -252,7 +271,6 @@ function submitTest() {
   calculateScore();
   examScreen.classList.add("hidden");
   resultScreen.classList.remove("hidden");
-
 }
 
 //submit button
@@ -294,7 +312,7 @@ restartBtn.onclick = () => {
   examState.optionOrder = [];
 
   resultScreen.classList.add("hidden");
-  startScreen.classList.remove("hidden");
+  homeScreen.classList.remove("hidden");
   header.classList.remove("hidden");
 };
 

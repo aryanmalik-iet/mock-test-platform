@@ -7,14 +7,36 @@
   </head>
 
   <body>
-    <header id="header">
-      <h1>Mock Test Platform</h1>
-      <p>Practice mock tests and track your performance</p>
+    <header id="header" class="main-header">
+      <div class="logo">Mock Test Platform</div>
+
+      <div class="nav-actions">
+        <button id="user-login">User Login</button>
+        <button id="admin-login">Admin Login</button>
+      </div>
     </header>
 
     <main>
+      <section id="home-screen">
+        <h2>Available Tests</h2>
+
+        <div id="test-list">
+          <div class="test-card">
+            <h3>Mock Test 1</h3>
+            <p>50 Questions • 10 Minutes</p>
+            <button class="start-test-btn" data-test="mock1">Start Test</button>
+          </div>
+
+          <div class="test-card">
+            <h3>Mock Test 2</h3>
+            <p>50 Questions • 15 Minutes</p>
+            <button class="start-test-btn" data-test="mock2">Start Test</button>
+          </div>
+        </div>
+      </section>
+
       <!-- START SCREEN -->
-      <section id="start-screen">
+      <section id="instruction-screen" class="hidden">
         <h2>Practice Test</h2>
 
         <div class="test-info">
@@ -99,9 +121,10 @@
         <h3>Submit Test?</h3>
 
         <p>
-          Answered: <span id="modal-answered"></span><br/>
-          Answered & Marked for review <span id="modal-answered-review"></span><br/>
-          Marked for Review: <span id="modal-review"></span><br/>
+          Answered: <span id="modal-answered"></span><br />
+          Answered & Marked for review <span id="modal-answered-review"></span
+          ><br />
+          Marked for Review: <span id="modal-review"></span><br />
           Unanswered: <span id="modal-unanswered"></span>
         </p>
 
