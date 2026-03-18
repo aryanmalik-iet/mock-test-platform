@@ -1,5 +1,6 @@
 let timerInterval;
 
+
 function startTimer() {
   timerInterval = setInterval(() => {
     examState.totalTime--;

@@ -44,7 +44,7 @@ function renderQuestion(questionObj) {
 
   //buttons dissabeling
   prevBtn.disabled = examState.currentQuestion === 0;
-  nextBtn.disabled = examState.currentQuestion === questions.length - 1;
-  revNextBtn.disabled = examState.currentQuestion === questions.length - 1;
+  nextBtn.disabled = examState.currentQuestion === getQuestions().length - 1;
+  revNextBtn.disabled = examState.currentQuestion === getQuestions().length - 1;
   clearBtn.disabled = examState.answers[examState.currentQuestion] === null;
 }

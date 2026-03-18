@@ -9,13 +9,46 @@ const totalQuestionsElement = document.getElementById("total-questions");
 const resultScreen = document.getElementById("result-screen");
 
 let selectedTest = null;
+let currentTest = null;
+
+//Exam State
+let examState = {
+  currentQuestion: 0,
+  answers: [],
+  visited: [],
+  review: [],
+  questionOrder: [],
+  optionOrder: [],
+  totalTime: 0,
+};
+
+function getQuestions() {
+  if (!currentTest) {
+    throw new Error("No test selected");
+  }
+  return currentTest.questions;
+}
 
 // select test button
 document.querySelectorAll(".start-test-btn").forEach((btn) => {
   btn.onclick = () => {
-    selectedTest = btn.dataset.test;
 
-    console.log("Selected Test:", selectedTest);
+    selectedTest = btn.dataset.test;
+    currentTest = tests.find((t) => t.id === selectedTest);
+
+    if (!currentTest) {
+      console.error("Test not found");
+      return;
+    }
+
+    const total = currentTest.questions.length;
+
+    totalQuestionsElement.textContent = total;
+    document.getElementById("total-q").textContent = total;
+    document.getElementById("time-limit").textContent =
+      currentTest.duration / 60 + " minutes";
+
+    console.log("Selected Test:", currentTest);
 
     homeScreen.classList.add("hidden");
     instructionScreen.classList.remove("hidden");
@@ -27,10 +60,6 @@ const examConfig = {
   timeLimit: 10 * 60,
 };
 //Initial UI Setup
-totalQuestionsElement.textContent = questions.length;
-document.getElementById("total-q").textContent = questions.length;
-document.getElementById("time-limit").textContent =
-  examConfig.timeLimit / 60 + " minutes";
 
 //exam status counter
 let answered = 0;
@@ -47,7 +76,7 @@ function updateStatusCounts() {
   unvisited = 0;
   unanswered = 0;
 
-  questions.forEach((q, i) => {
+  getQuestions().forEach((q, i) => {
     if (!examState.visited[i]) {
       unvisited++;
     } else if (examState.answers[i] !== null && examState.review[i]) {
@@ -85,7 +114,7 @@ function generatePalette() {
   const palette = document.getElementById("question-palette");
   palette.innerHTML = "";
 
-  questions.forEach((q, index) => {
+  getQuestions().forEach((q, index) => {
     const btn = document.createElement("button");
     btn.textContent = index + 1;
     btn.className = "palette-btn";
@@ -133,7 +162,9 @@ function generatePalette() {
 
 // UI SYNC PIPELINE
 function syncExamUI() {
-  renderQuestion(questions[examState.questionOrder[examState.currentQuestion]]);
+  renderQuestion(
+    getQuestions()[examState.questionOrder[examState.currentQuestion]],
+  );
   generatePalette();
   saveExamState();
 }
@@ -141,25 +172,40 @@ function syncExamUI() {
 //Exam Start Function
 
 function startExam() {
+  if (!currentTest) {
+    alert("No test selected");
+    return;
+  }
   instructionScreen.classList.add("hidden");
   header.classList.add("hidden");
   examScreen.classList.remove("hidden");
 
-  examState.totalTime = examConfig.timeLimit;
-  document.getElementById("time-remaining").textContent =
-    String(examConfig.timeLimit / 60).padStart(2, "0") + ":00";
 
-  examState.questionOrder = [...Array(questions.length).keys()];
+  examState.totalTime = currentTest
+    ? currentTest.duration
+    : examConfig.timeLimit;
+  const time = currentTest ? currentTest.duration : examConfig.timeLimit;
+
+  examState.testId = selectedTest;
+
+  document.getElementById("time-remaining").textContent =
+    String(time / 60).padStart(2, "0") + ":00";
+
+  const totalQuestions = getQuestions().length;
+
+  examState.answers = new Array(totalQuestions).fill(null);
+  examState.visited = new Array(totalQuestions).fill(false);
+  examState.review = new Array(totalQuestions).fill(false);
+
+  examState.questionOrder = [...Array(getQuestions().length).keys()];
   shuffleArray(examState.questionOrder);
 
-  examState.optionOrder = questions.map((q) => {
+  examState.optionOrder = getQuestions().map((q) => {
     const order = [...Array(q.options.length).keys()];
     shuffleArray(order);
     return order;
   });
 }
-
-
 
 //start button
 startBtn.onclick = () => {
@@ -168,16 +214,6 @@ startBtn.onclick = () => {
   startTimer();
 };
 
-//Exam State
-let examState = {
-  currentQuestion: 0,
-  answers: new Array(questions.length).fill(null),
-  visited: new Array(questions.length).fill(false),
-  review: new Array(questions.length).fill(false),
-  questionOrder: [],
-  optionOrder: [],
-  totalTime: 0,
-};
 //answer selector
 function selectAnswer(index) {
   examState.answers[examState.currentQuestion] = index;
@@ -194,12 +230,23 @@ function loadExamState() {
   if (!savedState) return;
 
   examState = JSON.parse(savedState);
+  currentTest = tests.find((t) => t.id === examState.testId);
+
+  if (!currentTest) {
+    localStorage.removeItem("examState");
+    return;
+  }
+  if (examState.testId) {
+    currentTest = tests.find((t) => t.id === examState.testId);
+  }
 
   homeScreen.classList.add("hidden");
   header.classList.add("hidden");
   examScreen.classList.remove("hidden");
 
-  renderQuestion(questions[examState.questionOrder[examState.currentQuestion]]);
+  renderQuestion(
+    getQuestions()[examState.questionOrder[examState.currentQuestion]],
+  );
   generatePalette();
 
   const minutes = Math.floor(examState.totalTime / 60);
@@ -219,7 +266,7 @@ document.getElementById("review-btn").onclick = () => {
 };
 
 document.getElementById("next-btn").onclick = () => {
-  if (examState.currentQuestion < questions.length - 1) {
+  if (examState.currentQuestion < getQuestions().length - 1) {
     examState.currentQuestion++;
     syncExamUI();
   }
@@ -233,7 +280,7 @@ document.getElementById("prev-btn").onclick = () => {
 };
 document.getElementById("review-next-btn").onclick = () => {
   examState.review[examState.currentQuestion] = true;
-  if (examState.currentQuestion < questions.length - 1) {
+  if (examState.currentQuestion < getQuestions().length - 1) {
     examState.currentQuestion++;
   }
   syncExamUI();
@@ -249,9 +296,9 @@ document.getElementById("clear-btn").onclick = () => {
 function calculateScore() {
   let score = 0;
 
-  questions.forEach((q, i) => {
+  getQuestions().forEach((q, i) => {
     const qIndex = examState.questionOrder[i];
-    const correctOriginalIndex = questions[qIndex].correct;
+    const correctOriginalIndex = getQuestions()[qIndex].correct;
     const shuffledIndex =
       examState.optionOrder[qIndex].indexOf(correctOriginalIndex);
 
@@ -305,9 +352,9 @@ restartBtn.onclick = () => {
   document.getElementById("question-palette").scrollTop = 0;
 
   examState.currentQuestion = 0;
-  examState.answers = new Array(questions.length).fill(null);
-  examState.visited = new Array(questions.length).fill(false);
-  examState.review = new Array(questions.length).fill(false);
+  examState.answers = new Array(getQuestions().length).fill(null);
+  examState.visited = new Array(getQuestions().length).fill(false);
+  examState.review = new Array(getQuestions().length).fill(false);
   examState.questionOrder = [];
   examState.optionOrder = [];
 
