@@ -29,31 +29,50 @@ function getQuestions() {
   return currentTest.questions;
 }
 
-// select test button
-document.querySelectorAll(".start-test-btn").forEach((btn) => {
-  btn.onclick = () => {
+//test list rendering 
 
-    selectedTest = btn.dataset.test;
-    currentTest = tests.find((t) => t.id === selectedTest);
+function renderTestList() {
+  const container = document.getElementById("test-list");
+  container.innerHTML = "";
 
-    if (!currentTest) {
-      console.error("Test not found");
-      return;
-    }
+  tests.forEach((test) => {
+    const card = document.createElement("div");
+    card.className = "test-card";
 
-    const total = currentTest.questions.length;
+    const title = document.createElement("h3");
+    title.textContent = test.title;
 
-    totalQuestionsElement.textContent = total;
-    document.getElementById("total-q").textContent = total;
-    document.getElementById("time-limit").textContent =
-      currentTest.duration / 60 + " minutes";
+    const info = document.createElement("p");
+    info.textContent =
+      test.questions.length + " Questions • " + test.duration / 60 + " Minutes";
 
-    console.log("Selected Test:", currentTest);
+    const btn = document.createElement("button");
+    btn.textContent = "Start Test";
+    btn.className = "start-test-btn";
+    btn.dataset.test = test.id;
 
-    homeScreen.classList.add("hidden");
-    instructionScreen.classList.remove("hidden");
-  };
-});
+    btn.onclick = () => {
+      selectedTest = test.id;
+      currentTest = test;
+
+      const total = currentTest.questions.length;
+
+      totalQuestionsElement.textContent = total;
+      document.getElementById("total-q").textContent = total;
+      document.getElementById("time-limit").textContent =
+        currentTest.duration / 60 + " minutes";
+
+      homeScreen.classList.add("hidden");
+      instructionScreen.classList.remove("hidden");
+    };
+
+    card.appendChild(title);
+    card.appendChild(info);
+    card.appendChild(btn);
+
+    container.appendChild(card);
+  });
+}
 
 // exam configuration
 const examConfig = {
@@ -223,6 +242,7 @@ function saveExamState() {
   localStorage.setItem("examState", JSON.stringify(examState));
 }
 
+renderTestList();
 //localstorage state recovery
 function loadExamState() {
   const savedState = localStorage.getItem("examState");
