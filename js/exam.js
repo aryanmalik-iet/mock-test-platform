@@ -74,10 +74,7 @@ function renderTestList() {
   });
 }
 
-// exam configuration
-const examConfig = {
-  timeLimit: 10 * 60,
-};
+
 //Initial UI Setup
 
 //exam status counter
@@ -199,11 +196,8 @@ function startExam() {
   header.classList.add("hidden");
   examScreen.classList.remove("hidden");
 
-
-  examState.totalTime = currentTest
-    ? currentTest.duration
-    : examConfig.timeLimit;
-  const time = currentTest ? currentTest.duration : examConfig.timeLimit;
+  examState.totalTime = currentTest.duration;
+  const time = currentTest.duration;
 
   examState.testId = selectedTest;
 
@@ -242,7 +236,9 @@ function saveExamState() {
   localStorage.setItem("examState", JSON.stringify(examState));
 }
 
-renderTestList();
+document.addEventListener("DOMContentLoaded", () => {
+  renderTestList();
+});
 //localstorage state recovery
 function loadExamState() {
   const savedState = localStorage.getItem("examState");
@@ -251,14 +247,16 @@ function loadExamState() {
 
   examState = JSON.parse(savedState);
   currentTest = tests.find((t) => t.id === examState.testId);
+  const total = currentTest.questions.length;
+
 
   if (!currentTest) {
     localStorage.removeItem("examState");
     return;
   }
-  if (examState.testId) {
-    currentTest = tests.find((t) => t.id === examState.testId);
-  }
+
+   document.getElementById("total-q").textContent = total;
+
 
   homeScreen.classList.add("hidden");
   header.classList.add("hidden");
@@ -371,12 +369,18 @@ restartBtn.onclick = () => {
   document.getElementById("time-remaining").textContent = "00:00";
   document.getElementById("question-palette").scrollTop = 0;
 
-  examState.currentQuestion = 0;
-  examState.answers = new Array(getQuestions().length).fill(null);
-  examState.visited = new Array(getQuestions().length).fill(false);
-  examState.review = new Array(getQuestions().length).fill(false);
-  examState.questionOrder = [];
-  examState.optionOrder = [];
+  examState = {
+    currentQuestion: 0,
+    answers: [],
+    visited: [],
+    review: [],
+    questionOrder: [],
+    optionOrder: [],
+    totalTime: 0,
+  };
+
+  currentTest = null;
+  selectedTest = null;
 
   resultScreen.classList.add("hidden");
   homeScreen.classList.remove("hidden");
