@@ -29,7 +29,7 @@ function getQuestions() {
   return currentTest.questions;
 }
 
-//test list rendering 
+//test list rendering
 
 function renderTestList() {
   const container = document.getElementById("test-list");
@@ -74,6 +74,67 @@ function renderTestList() {
   });
 }
 
+function renderPopularTests() {
+  const container = document.querySelector(".popular-scroll");
+  container.innerHTML = "";
+
+  // take first 3 tests for now
+  const popular = tests.slice(0, 4);
+
+  popular.forEach((test) => {
+    const card = document.createElement("div");
+    card.className = "popular-card";
+
+    const title = document.createElement("div");
+    title.className = "popular-title";
+    title.textContent = test.title;
+
+    const meta = document.createElement("div");
+    meta.className = "popular-meta";
+    meta.textContent =
+      test.questions.length + " Q • " + test.duration / 60 + " min";
+
+    const btn = document.createElement("button");
+    btn.className = "popular-btn";
+    btn.textContent = "Start";
+
+    btn.onclick = () => {
+      selectedTest = test.id;
+      currentTest = test;
+
+      const total = currentTest.questions.length;
+
+      totalQuestionsElement.textContent = total;
+      document.getElementById("total-q").textContent = total;
+      document.getElementById("time-limit").textContent =
+        currentTest.duration / 60 + " minutes";
+
+      homeScreen.classList.add("hidden");
+      instructionScreen.classList.remove("hidden");
+    };
+
+    card.appendChild(title);
+    card.appendChild(meta);
+    card.appendChild(btn);
+
+    card.onclick = () => {
+      selectedTest = test.id;
+      currentTest = test;
+
+      const total = currentTest.questions.length;
+
+      totalQuestionsElement.textContent = total;
+      document.getElementById("total-q").textContent = total;
+      document.getElementById("time-limit").textContent =
+        currentTest.duration / 60 + " minutes";
+
+      homeScreen.classList.add("hidden");
+      instructionScreen.classList.remove("hidden");
+    };
+
+    container.appendChild(card);
+  });
+}
 
 //Initial UI Setup
 
@@ -238,6 +299,7 @@ function saveExamState() {
 
 document.addEventListener("DOMContentLoaded", () => {
   renderTestList();
+  renderPopularTests();
 });
 //localstorage state recovery
 function loadExamState() {
@@ -249,14 +311,12 @@ function loadExamState() {
   currentTest = tests.find((t) => t.id === examState.testId);
   const total = currentTest.questions.length;
 
-
   if (!currentTest) {
     localStorage.removeItem("examState");
     return;
   }
 
-   document.getElementById("total-q").textContent = total;
-
+  document.getElementById("total-q").textContent = total;
 
   homeScreen.classList.add("hidden");
   header.classList.add("hidden");
