@@ -37,66 +37,21 @@ function renderTestList() {
 
   tests.forEach((test) => {
     const card = document.createElement("div");
-    card.className = "test-card";
-
-    const title = document.createElement("h3");
-    title.textContent = test.title;
-
-    const info = document.createElement("p");
-    info.textContent =
-      test.questions.length + " Questions • " + test.duration / 60 + " Minutes";
-
-    const btn = document.createElement("button");
-    btn.textContent = "Start Test";
-    btn.className = "start-test-btn";
-    btn.dataset.test = test.id;
-
-    btn.onclick = () => {
-      selectedTest = test.id;
-      currentTest = test;
-
-      const total = currentTest.questions.length;
-
-      totalQuestionsElement.textContent = total;
-      document.getElementById("total-q").textContent = total;
-      document.getElementById("time-limit").textContent =
-        currentTest.duration / 60 + " minutes";
-
-      homeScreen.classList.add("hidden");
-      instructionScreen.classList.remove("hidden");
-    };
-
-    card.appendChild(title);
-    card.appendChild(info);
-    card.appendChild(btn);
-
-    container.appendChild(card);
-  });
-}
-
-function renderPopularTests() {
-  const container = document.querySelector(".popular-scroll");
-  container.innerHTML = "";
-
-  // take first 3 tests for now
-  const popular = tests.slice(0, 4);
-
-  popular.forEach((test) => {
-    const card = document.createElement("div");
-    card.className = "popular-card";
+    card.className = "card";
 
     const title = document.createElement("div");
-    title.className = "popular-title";
+    title.className = "card-title";
     title.textContent = test.title;
 
     const meta = document.createElement("div");
-    meta.className = "popular-meta";
+    meta.className = "card-meta";
     meta.textContent =
-      test.questions.length + " Q • " + test.duration / 60 + " min";
+      test.questions.length + " Questions • " + test.duration / 60 + " Minutes";
 
     const btn = document.createElement("button");
-    btn.className = "popular-btn";
-    btn.textContent = "Start";
+    btn.className = "card-btn";
+    btn.textContent = "Start Test";
+    btn.dataset.test = test.id;
 
     btn.onclick = () => {
       selectedTest = test.id;
@@ -117,7 +72,35 @@ function renderPopularTests() {
     card.appendChild(meta);
     card.appendChild(btn);
 
-    card.onclick = () => {
+    container.appendChild(card);
+  });
+}
+
+function renderPopularTests() {
+  const container = document.querySelector(".popular-scroll");
+  container.innerHTML = "";
+
+  // take first 6 tests for now
+  const popular = tests.slice(0, 6);
+
+  popular.forEach((test) => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const title = document.createElement("div");
+    title.className = "card-title";
+    title.textContent = test.title;
+
+    const meta = document.createElement("div");
+    meta.className = "card-meta";
+    meta.textContent =
+      test.questions.length + " Q • " + test.duration / 60 + " min";
+
+    const btn = document.createElement("button");
+    btn.className = "card-btn";
+    btn.textContent = "Start";
+
+    btn.onclick = () => {
       selectedTest = test.id;
       currentTest = test;
 
@@ -131,6 +114,10 @@ function renderPopularTests() {
       homeScreen.classList.add("hidden");
       instructionScreen.classList.remove("hidden");
     };
+
+    card.appendChild(title);
+    card.appendChild(meta);
+    card.appendChild(btn);
 
     container.appendChild(card);
   });
