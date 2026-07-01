@@ -1,3 +1,4 @@
+<!--Instructuctions page is added in html and working perfectly also js changed to it but css not working -->
 <!doctype html>
 <html lang="en">
   <head>
@@ -50,16 +51,117 @@
         </div>
       </section>
 
-      <!-- START SCREEN -->
+      <!-- INSTRUCTION SCREEN -->
       <section id="instruction-screen" class="hidden">
-        <h2>Practice Test</h2>
+        <!-- Top Navigation -->
+        <header class="main-header instruction-nav">
+          <div class="logo">Mock Test Platform</div>
 
-        <div class="test-info">
-          <p>Total Questions: <span id="total-questions"></span></p>
-          <p>Time Limit: <span id="time-limit"></span></p>
+          <button id="back-to-home-btn" class="secondary-nav-btn">
+            ← Back to Home
+          </button>
+        </header>
+
+        <div class="instruction-page">
+          <!-- Hero -->
+          <section class="instruction-hero">
+            <p class="exam-label">MOCK EXAMINATION</p>
+
+            <h1 id="ins-exam-title">Mock Test</h1>
+
+            <p id="ins-exam-meta" class="exam-meta">Practice Test</p>
+
+            <p id="ins-exam-subtitle" class="exam-subtitle">
+              Read all instructions carefully before beginning the examination.
+            </p>
+          </section>
+
+          <!-- Examination Details -->
+          <section class="exam-info-section">
+            <h2>Examination Details</h2>
+
+            <div class="exam-info-grid">
+              <div class="info-card">
+                <span class="info-label">Questions</span>
+                <span id="info-questions" class="info-value">40</span>
+              </div>
+
+              <div class="info-card">
+                <span class="info-label">Maximum Marks</span>
+                <span id="info-marks" class="info-value">160</span>
+              </div>
+
+              <div class="info-card">
+                <span class="info-label">Duration</span>
+                <span id="info-duration" class="info-value">20 Minutes</span>
+              </div>
+
+              <div class="info-card">
+                <span class="info-label">Marking Scheme</span>
+                <span id="info-marking" class="info-value">+4 / -1</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Candidate Instructions -->
+          <section class="instruction-section">
+            <h2>Candidate Instructions</h2>
+
+            <div class="instruction-card">
+              <ul id="dynamic-instructions">
+                <li>
+                  Read every question carefully before selecting your answer.
+                </li>
+
+                <li>
+                  You may navigate between questions at any time during the
+                  examination.
+                </li>
+
+                <li>
+                  Use <strong>Mark for Review</strong> for questions you wish to
+                  revisit before submission.
+                </li>
+
+                <li>
+                  You may change your selected answer any number of times before
+                  submitting the examination.
+                </li>
+
+                <li>
+                  Do not refresh, close, or navigate away from this page during
+                  the examination.
+                </li>
+
+                <li>
+                  The examination will automatically submit once the allotted
+                  time expires.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- Important Notice -->
+          <section class="warning-card">
+            <h3>⚠ Important Notice</h3>
+
+            <p>
+              The examination will automatically submit when the allotted time
+              expires. No additional responses can be recorded after submission.
+            </p>
+          </section>
+
+          <!-- Footer Buttons -->
+          <div class="instruction-footer-actions">
+            <button id="select-another-btn" class="secondary-action-btn">
+              Select Another Test
+            </button>
+
+            <button id="start-btn-ins" class="primary-action-btn">
+              Start Examination
+            </button>
+          </div>
         </div>
-
-        <button id="start-btn">Start Test</button>
       </section>
 
       <!-- EXAM SCREEN -->
@@ -130,7 +232,8 @@
         <button id="restart-btn">Take Another Test</button>
       </section>
     </main>
-    <footer class="main-footer">
+    <!-- Footer -->
+    <footer class="main-footer" id="footer-main">
       <div class="footer-container">
         <div class="footer-grid">
           <div class="footer-col">
@@ -143,7 +246,7 @@
               to share knowledge through structured assessment
             </p>
             <div class="social-links">
-              <h3>Connect with me </h3>
+              <h3>Connect with me</h3>
               <a href="#">LinkedIn</a>
               <a href="#">GitHub</a>
             </div>

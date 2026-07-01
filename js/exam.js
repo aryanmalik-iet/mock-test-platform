@@ -3,10 +3,14 @@ const startBtn = document.getElementById("start-btn");
 const instructionScreen = document.getElementById("instruction-screen");
 const homeScreen = document.getElementById("home-screen");
 const header = document.getElementById("header");
+const footer = document.getElementById("footer-main");
 const examScreen = document.getElementById("exam-screen");
 const restartBtn = document.getElementById("restart-btn");
 const totalQuestionsElement = document.getElementById("total-questions");
 const resultScreen = document.getElementById("result-screen");
+const backToHomeBtn = document.getElementById("back-to-home-btn");
+const selectAnotherBtn = document.getElementById("select-another-btn");
+const startBtnIns = document.getElementById("start-btn-ins");
 
 let selectedTest = null;
 let currentTest = null;
@@ -57,15 +61,31 @@ function renderTestList() {
       selectedTest = test.id;
       currentTest = test;
 
-      const total = currentTest.questions.length;
+      // Hero
+      document.getElementById("ins-exam-title").textContent = test.title;
 
-      totalQuestionsElement.textContent = total;
-      document.getElementById("total-q").textContent = total;
-      document.getElementById("time-limit").textContent =
-        currentTest.duration / 60 + " minutes";
+      document.getElementById("ins-exam-meta").textContent = "Mock Test";
 
+      document.getElementById("ins-exam-subtitle").textContent =
+        "Read all instructions carefully before beginning the examination.";
+
+      // Examination Details
+      document.getElementById("info-questions").textContent =
+        test.questions.length;
+
+      document.getElementById("info-marks").textContent =
+        test.questions.length * 4;
+
+      document.getElementById("info-duration").textContent =
+        test.duration / 60 + " Minutes";
+
+      document.getElementById("info-marking").textContent = "+4 / -1";
+
+      // Show Instruction Screen
       homeScreen.classList.add("hidden");
+      header.classList.add("hidden");
       instructionScreen.classList.remove("hidden");
+      footer.classList.add("hidden");
     };
 
     card.appendChild(title);
@@ -104,15 +124,31 @@ function renderPopularTests() {
       selectedTest = test.id;
       currentTest = test;
 
-      const total = currentTest.questions.length;
+      // Hero
+      document.getElementById("ins-exam-title").textContent = test.title;
 
-      totalQuestionsElement.textContent = total;
-      document.getElementById("total-q").textContent = total;
-      document.getElementById("time-limit").textContent =
-        currentTest.duration / 60 + " minutes";
+      document.getElementById("ins-exam-meta").textContent = "Mock Test";
 
+      document.getElementById("ins-exam-subtitle").textContent =
+        "Read all instructions carefully before beginning the examination.";
+
+      // Examination Details
+      document.getElementById("info-questions").textContent =
+        test.questions.length;
+
+      document.getElementById("info-marks").textContent =
+        test.questions.length * 4;
+
+      document.getElementById("info-duration").textContent =
+        test.duration / 60 + " Minutes";
+
+      document.getElementById("info-marking").textContent = "+4 / -1";
+
+      // Show Instruction Screen
       homeScreen.classList.add("hidden");
+      header.classList.add("hidden");
       instructionScreen.classList.remove("hidden");
+      footer.classList.add("hidden");
     };
 
     card.appendChild(title);
@@ -242,6 +278,7 @@ function startExam() {
   }
   instructionScreen.classList.add("hidden");
   header.classList.add("hidden");
+  footer.classList.add("hidden");
   examScreen.classList.remove("hidden");
 
   examState.totalTime = currentTest.duration;
@@ -268,8 +305,18 @@ function startExam() {
   });
 }
 
+// Return to Home logic
+const goBackToHome = () => {
+  instructionScreen.classList.add("hidden");
+  homeScreen.classList.remove("hidden");
+  header.classList.remove("hidden");
+  footer.classList.remove("hidden");
+};
+
+backToHomeBtn.onclick = goBackToHome;
+selectAnotherBtn.onclick = goBackToHome;
 //start button
-startBtn.onclick = () => {
+startBtnIns.onclick = () => {
   startExam();
   syncExamUI();
   startTimer();
@@ -307,6 +354,7 @@ function loadExamState() {
 
   homeScreen.classList.add("hidden");
   header.classList.add("hidden");
+  footer.classList.add("hidden");
   examScreen.classList.remove("hidden");
 
   renderQuestion(
@@ -432,6 +480,7 @@ restartBtn.onclick = () => {
   resultScreen.classList.add("hidden");
   homeScreen.classList.remove("hidden");
   header.classList.remove("hidden");
+  footer.classList.remove("hidden");
 };
 
 loadExamState();
